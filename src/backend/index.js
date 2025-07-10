@@ -1,7 +1,8 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const fetch = require('node-fetch');
+import cors from 'cors';
+import fetch from 'node-fetch';
+import express from 'express';
+import { v4 as uuidv4 } from 'uuid';
+
 const app = express();
 const PORT = 3001;
 
@@ -9,7 +10,6 @@ app.use(cors());
 app.use(express.json());
 
 // Helper to generate unique IDs
-const { v4: uuidv4 } = require('uuid');
 
 // In-memory messages (pre-filled with random data)
 const messages = {
