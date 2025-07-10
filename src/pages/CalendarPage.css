@@ -1,0 +1,208 @@
+/* CalendarPage.css */
+
+.container {
+  padding: 1rem;
+  max-width: 48rem; /* ~3xl */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.title {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card {
+  border-radius: 0.75rem; /* rounded-xl */
+  border: 1px solid #d1d5db; /* light gray border */
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+  padding: 1rem;
+  background-color: white;
+}
+
+.dark .card {
+  background-color: #111827; /* gray-900 */
+  border-color: #374151;
+  box-shadow: none;
+}
+
+.card-content {
+  /* no extra styles */
+}
+
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.nav-button {
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
+
+.nav-button:hover {
+  background-color: #e5e7eb; /* gray-200 */
+}
+
+.dark .nav-button:hover {
+  background-color: #374151; /* gray-700 */
+}
+
+.month-year {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280; /* gray-500 */
+}
+
+.dark .weekdays {
+  color: #9ca3af; /* gray-400 */
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.day-cell {
+  height: 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  border: 1px solid #d1d5db;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  background-color: #f9fafb; /* gray-50 */
+}
+
+.dark .day-cell {
+  background-color: #1f2937; /* gray-800 */
+  border-color: #374151;
+}
+
+.day-cell:hover {
+  background-color: #dbeafe; /* blue-100 */
+}
+
+.dark .day-cell:hover {
+  background-color: #1e40af; /* blue-900 */
+  color: white;
+}
+
+.day-cell.empty {
+  background-color: transparent;
+  border: none;
+  cursor: default;
+}
+
+.day-cell.today {
+  background-color: #3b82f6; /* blue-500 */
+  color: white;
+  font-weight: 700;
+  cursor: default;
+}
+
+.event-text {
+  font-size: 0.75rem;
+  color: #4b5563; /* gray-600 */
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dark .event-text {
+  color: #d1d5db; /* gray-300 */
+}
+
+.event-editor {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  background-color: #f3f4f6; /* gray-100 */
+  border: 1px solid #d1d5db;
+}
+
+.dark .event-editor {
+  background-color: #374151; /* gray-800 */
+  border-color: #4b5563;
+}
+
+.event-editor h3 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.event-textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid #d1d5db;
+  resize: none;
+  font-family: inherit;
+}
+
+.dark .event-textarea {
+  background-color: #374151; /* gray-700 */
+  color: white;
+  border-color: #6b7280;
+}
+
+.buttons-row {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.button-cancel {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid #d1d5db;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.button-cancel:hover {
+  background-color: #e5e7eb;
+}
+
+.dark .button-cancel:hover {
+  background-color: #374151;
+}
+
+.button-save {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.button-save:hover {
+  background-color: #2563eb;
+}

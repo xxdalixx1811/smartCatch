@@ -4,14 +4,12 @@ import {
   MessageSquare,
   Calendar,
   Sparkles,
-  User,
   Settings,
-} from "lucide-react";
+} from "lucide-react"; // Removed User icon
 import MessagesPage from "./pages/MessagesPage";
-import SummaryPage from "./pages/SummaryPage";
+import NotificationPage from "./pages/NotificationPage";  // renamed import
 import CalendarPage from "./pages/CalendarPage";
-import ProfilePage from "./pages/ProfilePage";
-import SettingsPage from "./pages/SettingsPage";
+import SettingsPage from "./pages/SettingsPage"; // Removed ProfilePage import
 
 function useDarkMode() {
   useEffect(() => {
@@ -26,10 +24,9 @@ export default function App() {
     <Router>
       <div className="min-h-screen bg-white dark:bg-green text-black dark:text-white pb-16">
         <Routes>
-          <Route path="/" element={<SummaryPage />} />
+          <Route path="/" element={<NotificationPage />} /> {/* renamed route */}
           <Route path="/messages" element={<MessagesPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
         <nav className="fixed bottom-0 w-full flex justify-around border-t bg-white dark:bg-black py-2">
@@ -43,11 +40,7 @@ export default function App() {
           </Link>
           <Link to="/" className="text-xs text-center flex flex-col items-center">
             <Sparkles className="h-5 w-5" />
-            Summary
-          </Link>
-          <Link to="/profile" className="text-xs text-center flex flex-col items-center">
-            <User className="h-5 w-5" />
-            Profile
+            Notifications {/* updated label */}
           </Link>
           <Link to="/settings" className="text-xs text-center flex flex-col items-center">
             <Settings className="h-5 w-5" />

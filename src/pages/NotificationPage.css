@@ -1,0 +1,103 @@
+/* NotificationPage.css */
+
+.notification-page {
+  max-width: 480px;
+  margin: 30px auto;
+  padding: 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+
+}
+
+
+section {
+  margin-bottom: 30px;
+  background: #f5f9ff;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(30, 70, 150, 0.1);
+}
+
+.notifications-section h3,
+.summary-section h3,
+.calendar-section h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #3b82f6; /* blue underline */
+  padding-bottom: 6px;
+  color: #2563eb;
+}
+
+.notification-item {
+  padding: 8px 0;
+  border-bottom: 1px solid #dbeafe;
+  color: #000000;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.summary-block h4 {
+  margin: 10px 0 6px;
+  color: #1e40af;
+}
+
+.summary-block ul {
+  padding-left: 18px;
+}
+
+.summary-block li {
+  margin-bottom: 6px;
+  list-style-type: disc;
+  color: #334155;
+}
+
+.calendar-suggestion {
+  background: #2d5169;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 4px #2a5870;
+}
+
+.calendar-actions {
+  margin-top: 8px;
+}
+
+.calendar-actions button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.calendar-actions button:hover {
+  background-color: #2563eb;
+}
+
+.approved-label {
+  font-weight: 600;
+  color: #16a34a;
+}
+.page-title {
+  font-family: 'Bagel Fat One', cursive;
+  font-size: 3.2rem; /* adjust as needed */
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.dark .notification-page {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+

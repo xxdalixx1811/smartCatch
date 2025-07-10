@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Sparkles, Send, Search, Download } from "lucide-react";
+import { Sparkles, Send, Search } from "lucide-react";
 import "./MessagesPage.css";
-import myAvatar from '../assets/profile.jpg';
+import myAvatar from "../assets/profile.jpg";
+
+// Mock chat data
 const mockChats = {
   Samar: [
     { sender: "Samar", text: "Heyy how's SmartCatch going?", time: "10:01 AM" },
@@ -13,10 +15,10 @@ const mockChats = {
     { sender: "Me", text: "Not yet, just coding this messaging page 😪", time: "9:32 AM" },
     { sender: "Aziz", text: "👀 take a break soon", time: "9:35 AM" },
   ],
-    "SmartCatch Team": [
+  "SmartCatch Team": [
     { sender: "Teamleader", text: "Let’s meet tomorrow at 10", time: "08:30 AM" },
     { sender: "Me", text: "Sure, works for me!", time: "08:31 AM" },
-    { sender: "Halil", text: "Same here", time: "08:32 AM" },
+    { sender: "Ahmed", text: "Same here", time: "08:32 AM" },
     { sender: "Samar", text: "Can we also discuss the frontend?", time: "08:35 AM" },
     { sender: "Aziz", text: "Yes please", time: "08:36 AM" },
   ],
@@ -28,11 +30,11 @@ const userAvatars = {
   Samar: "https://randomuser.me/api/portraits/women/44.jpg",
   Aziz: "https://randomuser.me/api/portraits/men/46.jpg",
   Teamleader: "https://randomuser.me/api/portraits/women/65.jpg",
-  Halil: "https://randomuser.me/api/portraits/men/36.jpg",
+  Ahmed: "https://randomuser.me/api/portraits/men/36.jpg",
 };
 
 const MessagesPage = () => {
-  const [selectedUser, setSelectedUser]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [input, setInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -44,15 +46,13 @@ const MessagesPage = () => {
     <div className="messages-container">
       {/* Sidebar */}
       <aside className="sidebar">
-       <header className="chat-header">
-              <img
-                src={myAvatar}
-                alt='my avatar'
-                className="chat-avatar"
-              />
-              <div>
-                <h3 className="chat-user">Rahma</h3>              </div>
-            </header>
+        <header className="chat-header">
+          <img src={myAvatar} alt="My avatar" className="chat-avatar" />
+          <div>
+            <h3 className="chat-user">Rahma</h3>
+          </div>
+        </header>
+
         <h2 className="sidebar-title">Messages</h2>
         <div className="search-bar">
           <input
@@ -60,9 +60,11 @@ const MessagesPage = () => {
             placeholder="Search users..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
           />
           <Search className="search-icon" />
         </div>
+
         <div className="user-list">
           {filteredUsers.length === 0 && <p className="no-users">No users found.</p>}
           {filteredUsers.map((user) => (
@@ -71,11 +73,15 @@ const MessagesPage = () => {
               onClick={() => setSelectedUser(user)}
               className={`user-item ${selectedUser === user ? "selected" : ""}`}
             >
-              <img src={userAvatars[user]} alt={`${user} avatar`} className="avatar" />
+              <img
+                src={userAvatars[user] || myAvatar}
+                alt={`${user} avatar`}
+                className="avatar"
+              />
               <div className="user-info">
                 <p className="user-name">{user}</p>
                 <p className="last-message">
-                  {mockChats[user][mockChats[user].length - 1].text}
+                  {mockChats[user]?.[mockChats[user].length - 1]?.text || ""}
                 </p>
               </div>
             </div>
@@ -91,7 +97,7 @@ const MessagesPage = () => {
           <>
             <header className="chat-header">
               <img
-                src={userAvatars[selectedUser]}
+                src={userAvatars[selectedUser] || myAvatar}
                 alt={`${selectedUser} avatar`}
                 className="chat-avatar"
               />
@@ -102,26 +108,25 @@ const MessagesPage = () => {
             </header>
 
             <section className="chat-messages">
-             {mockChats[selectedUser].map((msg, i) => {
-  const isMe = msg.sender === "Me";
-  const avatarSrc = msg.sender === "Me" ? myAvatar : userAvatars[msg.sender];
+              {mockChats[selectedUser]?.map((msg, i) => {
+                const isMe = msg.sender === "Me";
+                const avatarSrc = msg.sender === "Me" ? myAvatar : userAvatars[msg.sender] || myAvatar;
 
-  return (
-    <div key={i} className={`chat-bubble-wrapper ${isMe ? "me" : "them"}`}>
-      {!isMe && (
-        <img src={avatarSrc} alt={`${msg.sender} avatar`} className="message-avatar" />
-      )}
-      <div className={`chat-bubble ${isMe ? "me" : "them"}`}>
-        <p>{msg.text}</p>
-        <span className="chat-time">{msg.time}</span>
-      </div>
-      {isMe && (
-        <img src={avatarSrc} alt="My avatar" className="message-avatar" />
-      )}
-    </div>
-  );
-})}
-
+                return (
+                  <div key={i} className={`chat-bubble-wrapper ${isMe ? "me" : "them"}`}>
+                    {!isMe && (
+                      <img src={avatarSrc} alt={`${msg.sender} avatar`} className="message-avatar" />
+                    )}
+                    <div className={`chat-bubble ${isMe ? "me" : "them"}`}>
+                      <p>{msg.text}</p>
+                      <span className="chat-time">{msg.time}</span>
+                    </div>
+                    {isMe && (
+                      <img src={avatarSrc} alt="My avatar" className="message-avatar" />
+                    )}
+                  </div>
+                );
+              })}
             </section>
 
             <form
