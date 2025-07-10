@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { DarkModeContext } from "../context/DarkModeContext";
 import "./NotificationPage.css";
 
@@ -31,6 +31,10 @@ const NotificationPage = () => {
     },
   ]);
 
+  const [summary, setSummary] = useState<string | null>(null);
+  const [loadingSummary, setLoadingSummary] = useState(false);
+  const [summaryError, setSummaryError] = useState<string | null>(null);
+
   const handleAccept = (id: number) => {
     setCalendarSuggestions((prev) =>
       prev.map((item) =>
@@ -43,6 +47,25 @@ const NotificationPage = () => {
     setCalendarSuggestions((prev) =>
       prev.filter((item) => item.id !== id)
     );
+  };
+
+  const handleSummarize = async () => {
+    setLoadingSummary(true);
+    setSummaryError(null);
+    setSummary(null);
+    try {
+      const res = await fetch("http://localhost:3001/summarize", { method: "POST" });
+      const data = await res.json();
+      if (data.summary) {
+        setSummary(data.summary);
+      } else {
+        setSummaryError("No summary returned.");
+      }
+    } catch (err) {
+      setSummaryError("Failed to fetch summary.");
+    } finally {
+      setLoadingSummary(false);
+    }
   };
 
   return (
@@ -60,16 +83,25 @@ const NotificationPage = () => {
 
       <section className="summary-section">
         <h3>🧠 Smart Summary</h3>
-        {summaries.map((s) => (
-          <div key={s.id} className="summary-block">
-            <h4>{s.group}</h4>
-            <ul>
-              {s.points.map((point, i) => (
-                <li key={i}>{point}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        <button onClick={handleSummarize} disabled={loadingSummary} style={{ marginBottom: 12 }}>
+          {loadingSummary ? "Summarizing..." : "Summarize All Chats"}
+        </button>
+        {summaryError && <p style={{ color: 'red' }}>{summaryError}</p>}
+        {summary && (
+          <div style={{ whiteSpace: 'pre-line', marginTop: 8 }}>{summary}</div>
+        )}
+        {!summary && !loadingSummary && !summaryError && (
+          summaries.map((s) => (
+            <div key={s.id} className="summary-block">
+              <h4>{s.group}</h4>
+              <ul>
+                {s.points.map((point, i) => (
+                  <li key={i}>{point}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        )}
       </section>
 
       <section className="calendar-section">

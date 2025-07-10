@@ -1,31 +1,9 @@
-import { useState } from "react";
-import { Sparkles, Send, Search } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Sparkles, Send, Search, Trash2 } from "lucide-react";
 import "./MessagesPage.css";
 import myAvatar from "../assets/profile.jpg";
 
 // Mock chat data
-const mockChats = {
-  Samar: [
-    { sender: "Samar", text: "Heyy how's SmartCatch going?", time: "10:01 AM" },
-    { sender: "Me", text: "Haha slow but getting there 😅", time: "10:03 AM" },
-    { sender: "Samar", text: "Lmk if you need help!", time: "10:05 AM" },
-  ],
-  Aziz: [
-    { sender: "Aziz", text: "Did you eat?", time: "9:30 AM" },
-    { sender: "Me", text: "Not yet, just coding this messaging page 😪", time: "9:32 AM" },
-    { sender: "Aziz", text: "👀 take a break soon", time: "9:35 AM" },
-  ],
-  "SmartCatch Team": [
-    { sender: "Teamleader", text: "Let’s meet tomorrow at 10", time: "08:30 AM" },
-    { sender: "Me", text: "Sure, works for me!", time: "08:31 AM" },
-    { sender: "Ahmed", text: "Same here", time: "08:32 AM" },
-    { sender: "Samar", text: "Can we also discuss the frontend?", time: "08:35 AM" },
-    { sender: "Aziz", text: "Yes please", time: "08:36 AM" },
-  ],
-};
-
-const users = Object.keys(mockChats);
-
 const userAvatars = {
   Samar: "https://randomuser.me/api/portraits/women/44.jpg",
   Aziz: "https://randomuser.me/api/portraits/men/46.jpg",
@@ -33,10 +11,89 @@ const userAvatars = {
   Ahmed: "https://randomuser.me/api/portraits/men/36.jpg",
 };
 
+interface Message {
+  sender: string;
+  text: string;
+  time: string;
+  id: string;
+}
+
+const users = [
+  "Samar",
+  "Aziz",
+  "SmartCatch Team",
+  "Mom",
+  "Project X",
+  "Football Buddies",
+  "Sister",
+  "Book Club"
+];
+
+const API_URL = "http://localhost:3001";
+
 const MessagesPage = () => {
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchMessages = async (user: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`${API_URL}/messages/${encodeURIComponent(user)}`);
+      if (!res.ok) throw new Error("Failed to fetch messages");
+      const data = await res.json();
+      setMessages(data);
+    } catch (err) {
+      setError("Could not load messages. Please try again.");
+      setMessages([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedUser) {
+      fetchMessages(selectedUser);
+    } else {
+      setMessages([]);
+      setError(null);
+    }
+  }, [selectedUser]);
+
+  const handleSend = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || !selectedUser) return;
+    const now = new Date();
+    const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const newMsg = { sender: "Me", text: input, time };
+    setInput("");
+    try {
+      await fetch(`${API_URL}/messages/${encodeURIComponent(selectedUser)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newMsg),
+      });
+      await fetchMessages(selectedUser);
+    } catch (err) {
+      // Optionally handle error
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!selectedUser) return;
+    try {
+      await fetch(`${API_URL}/messages/${encodeURIComponent(selectedUser)}/${id}`, {
+        method: "DELETE",
+      });
+      await fetchMessages(selectedUser);
+    } catch (err) {
+      // Optionally handle error
+    }
+  };
 
   const filteredUsers = users.filter((user) =>
     user.toLowerCase().includes(searchTerm.toLowerCase())
@@ -81,7 +138,10 @@ const MessagesPage = () => {
               <div className="user-info">
                 <p className="user-name">{user}</p>
                 <p className="last-message">
-                  {mockChats[user]?.[mockChats[user].length - 1]?.text || ""}
+                  {/* Show last message if available */}
+                  {selectedUser === user
+                    ? messages[messages.length - 1]?.text || ""
+                    : ""}
                 </p>
               </div>
             </div>
@@ -108,34 +168,45 @@ const MessagesPage = () => {
             </header>
 
             <section className="chat-messages">
-              {mockChats[selectedUser]?.map((msg, i) => {
-                const isMe = msg.sender === "Me";
-                const avatarSrc = msg.sender === "Me" ? myAvatar : userAvatars[msg.sender] || myAvatar;
-
-                return (
-                  <div key={i} className={`chat-bubble-wrapper ${isMe ? "me" : "them"}`}>
-                    {!isMe && (
-                      <img src={avatarSrc} alt={`${msg.sender} avatar`} className="message-avatar" />
-                    )}
-                    <div className={`chat-bubble ${isMe ? "me" : "them"}`}>
-                      <p>{msg.text}</p>
-                      <span className="chat-time">{msg.time}</span>
+              {loading ? (
+                <p>Loading...</p>
+              ) : error ? (
+                <p style={{ color: 'red' }}>{error}</p>
+              ) : messages.length === 0 ? (
+                <p style={{ color: '#888', textAlign: 'center' }}>No messages yet. Start the conversation!</p>
+              ) : (
+                messages.map((msg, i) => {
+                  const isMe = msg.sender === "Me";
+                  const avatarSrc = isMe ? myAvatar : userAvatars[msg.sender] || myAvatar;
+                  return (
+                    <div key={msg.id} className={`chat-bubble-wrapper ${isMe ? "me" : "them"}`}>
+                      {!isMe && (
+                        <img src={avatarSrc} alt={`${msg.sender} avatar`} className="message-avatar" />
+                      )}
+                      <div className={`chat-bubble ${isMe ? "me" : "them"}`}>
+                        <p>{msg.text}</p>
+                        <span className="chat-time">{msg.time}</span>
+                        {isMe && (
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(msg.id)}
+                            title="Delete message"
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', marginLeft: 8, color: '#f87171', verticalAlign: 'middle' }}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
+                      </div>
+                      {isMe && (
+                        <img src={avatarSrc} alt="My avatar" className="message-avatar" />
+                      )}
                     </div>
-                    {isMe && (
-                      <img src={avatarSrc} alt="My avatar" className="message-avatar" />
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </section>
 
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                setInput("");
-              }}
-              className="chat-input-bar"
-            >
+            <form onSubmit={handleSend} className="chat-input-bar">
               <input
                 type="text"
                 value={input}
